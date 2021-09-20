@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"fmt"
 	"gochat/server/authentication"
 	"log"
 	"net/http"
@@ -174,6 +175,8 @@ func (s *Server) BroadcastMessage(sender string, content string) {
 			delete(s.connections, conn)
 		}
 	}
+
+	fmt.Printf("<%s> %s\n", sender, content)
 }
 
 func (s *Server) WriteError(conn *websocket.Conn, err error) {
@@ -270,4 +273,8 @@ func HasKeys(v map[string]interface{}, keys ...string) bool {
 		}
 	}
 	return true
+}
+
+func (s *Server) GetConnections() map[*websocket.Conn]string {
+	return s.connections
 }

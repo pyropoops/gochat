@@ -3,13 +3,14 @@ package main
 import (
 	"embed"
 	"fmt"
-	"github.com/gorilla/mux"
 	"gochat/server/chat"
 	"gochat/server/panel"
 	"io/fs"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 const PORT = 8000
@@ -36,7 +37,7 @@ func main() {
 	app.Router.HandleFunc("/ws", app.ChatServer.HandleConnection)
 	app.Router.PathPrefix("/").Handler(http.FileServer(http.FS(views)))
 
-	fmt.Printf("Listening on port %d...\n", PORT)
+	fmt.Printf("Listening on %d...\n", PORT)
 
 	controlPanel := panel.NewPanel(app.ChatServer)
 	go controlPanel.Start()

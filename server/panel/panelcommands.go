@@ -1,6 +1,9 @@
 package panel
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func (cp *ControlPanel) registerCommands() {
 	cp.commands = make(map[string]func([]string))
@@ -11,10 +14,10 @@ func (cp *ControlPanel) registerCommands() {
 			fmt.Println("Usage: register <username> <password>")
 			return
 		}
-			username := args[0]
-			password := args[1]
-			cp.ChatServer.UserManager.RegisterUser(username,password)
-			fmt.Printf("User: %s registered with password: %s\n", username, password)
+		username := args[0]
+		password := args[1]
+		cp.ChatServer.UserManager.RegisterUser(username, password)
+		fmt.Printf("User: %s registered with password: %s\n", username, password)
 
 	})
 
@@ -43,6 +46,23 @@ func (cp *ControlPanel) registerCommands() {
 			fmt.Printf("The user: %s has been kicked successfully!\n", args[0])
 		} else {
 			fmt.Printf("Could not find user: %s\n", args[0])
+		}
+	})
+
+	cp.HandleCommand("broadcast", func(args []string) {
+		if len(args) == 0 {
+			fmt.Println("Usage: broadcast <message>")
+			return
+		}
+
+		cp.ChatServer.BroadcastMessage("CONSOLE", strings.Join(args, " "))
+	})
+
+	cp.HandleCommand("sessions", func(args []string) {
+		fmt.Println("\nActive Connections:")
+		for conn, name := range cp.ChatServer.GetConnections() {
+			addr := conn.RemoteAddr().String()
+			fmt.Printf("%s - %s\n", name, addr)
 		}
 	})
 }
