@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const PORT = 8000
+const PORT = 80
 
 //go:embed views
 var embeds embed.FS
@@ -56,5 +56,5 @@ func logOutbound() {
 	defer conn.Close()
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 	ip := localAddr.IP
-	fmt.Printf("Listening on: %s:8000\n", ip.String())
+	fmt.Printf("Listening on: %s:%d\n", ip.String(), PORT)
 }
