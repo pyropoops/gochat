@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"net"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -37,7 +38,7 @@ func main() {
 	app.Router.HandleFunc("/ws", app.ChatServer.HandleConnection)
 	app.Router.PathPrefix("/").Handler(http.FileServer(http.FS(views)))
 
-	fmt.Printf("Listening on %d...\n", PORT)
+	logOutbound()
 
 	controlPanel := panel.NewPanel(app.ChatServer)
 	go controlPanel.Start()
@@ -45,4 +46,15 @@ func main() {
 	if err := http.ListenAndServe(":"+strconv.Itoa(PORT), app.Router); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func logOutbound() {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	ip := localAddr.IP
+	fmt.Printf("Listening on: %s:8000\n", ip.String())
 }
