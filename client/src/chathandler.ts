@@ -1,8 +1,7 @@
 import EventEmitter from "events";
 import { IMessage } from "./message";
 
-const WEBSOCKET_BACKEND: string =
-  process.env["REACT_APP_BACKEND"] || "ws://rdp.plasmoid.io:8000/ws";
+const WEBSOCKET_BACKEND: string = `ws://${window.location.host}/ws`
 
 export interface IUserSession {
   username: string;
@@ -15,7 +14,6 @@ export default class ChatHandler extends EventEmitter {
   constructor() {
     super();
 
-    console.log(`Dialing: ${WEBSOCKET_BACKEND}`);
     this.socket = new WebSocket(WEBSOCKET_BACKEND);
 
     this.socket.addEventListener("close", () => window.location.reload());
